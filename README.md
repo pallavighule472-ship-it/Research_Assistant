@@ -2,6 +2,8 @@
 
 An autonomous multi-agent research platform that takes a topic, searches the web, extracts and synthesizes information across multiple iterations, and produces a cited long-form report — streamed live to a browser UI.
 
+![Demo](demo_1.gif)
+
 ---
 
 ## Architecture
