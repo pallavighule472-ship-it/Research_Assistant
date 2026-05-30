@@ -252,6 +252,50 @@ html, body, [class*="css"] {
     padding-top: 1rem !important;
     max-width: 1400px;
 }
+
+/* ── Tablet (max 1024px) ── */
+@media screen and (max-width: 1024px) {
+    .hero-title { font-size: 2.8rem; }
+    .block-container { padding-left: 1.5rem !important; padding-right: 1.5rem !important; }
+}
+
+/* ── Mobile (max 768px) ── */
+@media screen and (max-width: 768px) {
+    .hero { padding: 1.5rem 0.5rem 1rem; }
+    .hero-title { font-size: 2rem; }
+    .hero-sub { font-size: 0.9rem; }
+
+    /* Stack columns vertically */
+    [data-testid="stHorizontalBlock"] {
+        flex-direction: column !important;
+        gap: 0 !important;
+    }
+    [data-testid="column"] {
+        width: 100% !important;
+        flex: 1 1 100% !important;
+        min-width: 100% !important;
+    }
+
+    .block-container { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+    .card { padding: 1.2rem; border-radius: 16px; }
+    .step { font-size: 0.8rem; padding: 0.6rem 0.9rem; }
+    .chip { font-size: 0.72rem; padding: 0.25rem 0.7rem; margin-right: 0.4rem; }
+    .report-title { font-size: 1.5rem; }
+    .report-h2 { font-size: 1.15rem; }
+    .report-h3 { font-size: 1rem; }
+
+    .stButton > button { font-size: 0.95rem !important; padding: 0.75rem 1rem !important; }
+    .stDownloadButton > button { font-size: 0.85rem !important; }
+    .stTextArea textarea { font-size: 0.9rem !important; }
+}
+
+/* ── Small Mobile (max 480px) ── */
+@media screen and (max-width: 480px) {
+    .hero-title { font-size: 1.6rem; }
+    .hero-badge { font-size: 0.65rem; }
+    .card { padding: 1rem; border-radius: 12px; }
+    .report-title { font-size: 1.3rem; }
+}
 </style>
 """, unsafe_allow_html=True)
 
