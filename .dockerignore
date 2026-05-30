@@ -1,0 +1,9 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+.git/
+*.md
+test_research.py
+research_report_*
