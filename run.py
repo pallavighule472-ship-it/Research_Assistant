@@ -1,6 +1,7 @@
 """
 run.py - Research Assistant Orchestrator
 Launches both the FastAPI backend and Streamlit frontend concurrently.
+Optimized for Railway deployment.
 
 Usage:
     python run.py
@@ -12,13 +13,14 @@ import os
 import time
 import signal
 import threading
-import webbrowser
 import urllib.request
 
 # ─── Configuration ────────────────────────────────────────────────────────────
-BACKEND_HOST  = "127.0.0.1"
-BACKEND_PORT  = 8000
-FRONTEND_PORT = 8501
+# Use 0.0.0.0 for Railway (listens on all interfaces)
+# Use environment variables for flexibility
+BACKEND_HOST  = os.getenv("BACKEND_HOST", "0.0.0.0")
+BACKEND_PORT  = int(os.getenv("BACKEND_PORT", "8000"))
+FRONTEND_PORT = int(os.getenv("FRONTEND_PORT", "8501"))
 SCRIPT_DIR    = os.path.dirname(os.path.abspath(__file__))
 
 # ─── Color Helpers ────────────────────────────────────────────────────────────
@@ -36,7 +38,7 @@ def print_banner():
 ║          🔬  AI Research Assistant - Launcher            ║
 ║                                                          ║
 ║   FastAPI  Backend  →  http://{BACKEND_HOST}:{BACKEND_PORT}         ║
-║   Streamlit Frontend →  http://localhost:{FRONTEND_PORT}         ║
+║   Streamlit Frontend →  http://0.0.0.0:{FRONTEND_PORT}         ║
 ╚══════════════════════════════════════════════════════════╝
 {RESET}""")
 
@@ -58,10 +60,7 @@ def stream_output(process, label, color):
 
 def launch_backend():
     """Starts the FastAPI server using uvicorn."""
-    print(f"{GREEN}{BOLD}[LAUNCHER] Starting FastAPI Backend on port {BACKEND_PORT}...{RESET}")
-    # Use a self-contained Python command that injects sys.path before importing uvicorn.
-    # This is the most reliable approach on Windows since --reload spawns child processes
-    # that don't always inherit modified PYTHONPATH values.
+    print(f"{GREEN}{BOLD}[LAUNCHER] Starting FastAPI Backend on {BACKEND_HOST}:{BACKEND_PORT}...{RESET}")
     cmd = (
         f"import sys; sys.path.insert(0, r'{SCRIPT_DIR}'); "
         f"import uvicorn; "
@@ -83,6 +82,7 @@ def launch_frontend():
             sys.executable, "-m", "streamlit", "run",
             "Research_Frontend.py",
             "--server.port", str(FRONTEND_PORT),
+            "--server.address", "0.0.0.0",
             "--server.headless", "true"
         ],
         cwd=SCRIPT_DIR,
@@ -101,7 +101,7 @@ def main():
     ready = False
     while time.time() < deadline:
         try:
-            urllib.request.urlopen(f"http://{BACKEND_HOST}:{BACKEND_PORT}/health", timeout=1)
+            urllib.request.urlopen(f"http://127.0.0.1:{BACKEND_PORT}/health", timeout=1)
             ready = True
             break
         except Exception:
@@ -119,13 +119,6 @@ def main():
     frontend_thread.start()
 
     print(f"\n{BOLD}{YELLOW}[LAUNCHER] Both services are running! Press Ctrl+C to stop all.{RESET}\n")
-
-    def open_browser():
-        time.sleep(4)
-        print(f"{CYAN}[LAUNCHER] Opening browser → http://localhost:{FRONTEND_PORT}{RESET}")
-        webbrowser.open(f"http://localhost:{FRONTEND_PORT}")
-
-    threading.Thread(target=open_browser, daemon=True).start()
 
     def _stop_all():
         _shutdown.set()
@@ -160,3 +153,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
